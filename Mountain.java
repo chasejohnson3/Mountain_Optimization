@@ -16,11 +16,13 @@ public class Mountain
         nextStep = new Point(-1.99,0);
         Point nextTry = nextStep;
         do{
+            // Check every point around the current one incrementing by 2 degrees at each check
             for(double theta = 0.0; theta < 360; theta+=2.0)
             {
                 nextTry.setX(location.getX()+.01*Math.cos(theta*(2.0*Math.PI/360.0)));
                 //nextTry.setX(location.getX()+.01);
                 nextTry.setY(location.getY()+.01*Math.sin(theta*(2.0*Math.PI/360.0)));
+                // the nextTry is not steeper than 45 degrees and gets closer to the peak than the previous best nextStep, set the next step to nextTry
                 if(mountain.isLegal(location,nextTry) && mountain.getDistance(nextTry,peak) < mountain.getDistance(nextStep,peak))
                 {
                     nextStep = nextTry;
@@ -32,11 +34,12 @@ public class Mountain
         while(mountain.getDistance(nextStep,peak)>=.01);
         
     }
-    
+    // Return the current location
     public Point getLocation()
     {
         return location;
     }
+    // Get the vertical height of a point
     public double getHeight(Point a)
     {
         double x = a.getX();
@@ -44,22 +47,26 @@ public class Mountain
         return (.9*Math.exp(1 - Math.pow(x, 2) - Math.pow(y,2)) + Math.exp(-Math.pow(x - 1,2)- 
         Math.pow(y + .25,2))- Math.exp(-Math.pow(y,2)) - Math.exp(-.5*Math.pow(x,2)) + .25*x - .2*y + 1.5);
     }
+    // get the vertical distance between two points
     public double getVertDist(Point a, Point b)
     {
         double hc = this.getHeight(b)-this.getHeight(a);
         double dist = this.getDistance(b, a);
         return Math.sqrt(Math.pow(hc,2)+Math.pow(dist,2));
     }
+    // Get the vertical slope between two points
     public double getVertSlope(Point a, Point b)
     {
         double hc = this.getHeight(b)-this.getHeight(a);
         double dist = this.getDistance(b, a);
         return hc/dist;
     }
+    // Get the distance between two points
     public double getDistance(Point a, Point b)
     {
         return Math.sqrt((a.getY()-b.getY())*(a.getY()-b.getY())+(a.getX()-b.getX())*(a.getX()-b.getX()));   
     }
+    // Return true if the vertical angle between two points is less than or equal to 45 degrees
     public boolean isLegal(Point a, Point b)
     {
         if (getVertSlope(a, b) <= 1)//&& 
